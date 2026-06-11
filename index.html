@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hierarchy Notes — Annotate, tag & track TODOs in the Unity Hierarchy</title>
+<meta name="description" content="Hierarchy Notes is a Unity editor tool: attach notes, status badges and TODOs directly to GameObjects in the Hierarchy and Scene View. No components, no build impact.">
+<style>
+  :root{
+    --bg:#1b1b1f;
+    --panel:#26262b;
+    --panel-2:#2e2e34;
+    --line:#3a3a41;
+    --text:#d7d7dc;
+    --text-dim:#8e8e98;
+    --todo:#ff9a1f;
+    --wip:#4d9aff;
+    --broken:#f2554d;
+    --final:#46c96b;
+    --radius:6px;
+    --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    --body:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto}
+    *,*::before,*::after{animation:none!important;transition:none!important}
+  }
+  body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:16px;line-height:1.65}
+  a{color:var(--wip);text-decoration:none}
+  a:hover{text-decoration:underline}
+  a:focus-visible,button:focus-visible{outline:2px solid var(--wip);outline-offset:3px;border-radius:3px}
+  .wrap{max-width:980px;margin:0 auto;padding:0 24px}
+
+  /* ---- header ---- */
+  header{border-bottom:1px solid var(--line);position:sticky;top:0;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);z-index:10}
+  .nav{display:flex;align-items:center;justify-content:space-between;height:60px}
+  .brand{font-family:var(--mono);font-size:14px;letter-spacing:.04em;color:var(--text)}
+  .brand .pub{color:var(--text-dim)}
+  .nav-links{display:flex;gap:22px;font-size:14px}
+  .nav-links a{color:var(--text-dim)}
+  .nav-links a:hover{color:var(--text);text-decoration:none}
+
+  /* ---- hero ---- */
+  .hero{padding:84px 0 64px;display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:center}
+  .hero h1{font-family:var(--mono);font-weight:600;font-size:clamp(28px,4vw,40px);line-height:1.22;letter-spacing:-.01em}
+  .hero h1 .hl{color:var(--todo)}
+  .hero p.lede{margin-top:18px;color:var(--text-dim);font-size:17px;max-width:46ch}
+  .hero .cta-row{margin-top:28px;display:flex;gap:14px;flex-wrap:wrap}
+  .btn{display:inline-block;font-family:var(--mono);font-size:14px;padding:11px 20px;border-radius:var(--radius);border:1px solid var(--line)}
+  .btn-primary{background:var(--todo);border-color:var(--todo);color:#1b1206;font-weight:600}
+  .btn-primary:hover{filter:brightness(1.08);text-decoration:none}
+  .btn-ghost{color:var(--text)}
+  .btn-ghost:hover{border-color:var(--text-dim);text-decoration:none}
+  .pipeline-note{margin-top:16px;font-size:13px;color:var(--text-dim);font-family:var(--mono)}
+
+  /* ---- the signature: a live mock of the Unity Hierarchy ---- */
+  .mock{background:var(--panel);border:1px solid var(--line);border-radius:8px;overflow:hidden;box-shadow:0 18px 50px rgba(0,0,0,.45)}
+  .mock-titlebar{display:flex;align-items:center;gap:8px;background:var(--panel-2);border-bottom:1px solid var(--line);padding:8px 12px;font-family:var(--mono);font-size:12px;color:var(--text-dim)}
+  .mock-titlebar .dot{width:9px;height:9px;border-radius:50%;background:var(--line)}
+  .rowlist{padding:8px 0 12px;font-family:var(--mono);font-size:13px}
+  .row{display:flex;align-items:center;gap:8px;padding:5px 14px;position:relative}
+  .row .tri{color:var(--text-dim);font-size:9px;width:10px}
+  .row .obj{color:var(--text)}
+  .row .spacer{flex:1}
+  .badge{font-size:10px;font-weight:700;letter-spacing:.06em;padding:2px 7px;border-radius:3px;color:#15100a}
+  .b-todo{background:var(--todo)}
+  .b-wip{background:var(--wip);color:#0a1322}
+  .b-broken{background:var(--broken);color:#1d0908}
+  .b-final{background:var(--final);color:#0a1c0f}
+  .noteicon{width:14px;height:14px;border-radius:50%;border:1.5px solid var(--text-dim);color:var(--text-dim);font-size:9px;display:inline-flex;align-items:center;justify-content:center;font-style:italic;font-family:Georgia,serif}
+  .t-todo{background:linear-gradient(90deg,color-mix(in srgb,var(--todo) 14%,transparent),transparent 70%)}
+  .t-wip{background:linear-gradient(90deg,color-mix(in srgb,var(--wip) 14%,transparent),transparent 70%)}
+  .t-broken{background:linear-gradient(90deg,color-mix(in srgb,var(--broken) 14%,transparent),transparent 70%)}
+  .t-final{background:linear-gradient(90deg,color-mix(in srgb,var(--final) 14%,transparent),transparent 70%)}
+  .row .child{padding-left:18px}
+  /* floating scene-view label */
+  .float-note{position:relative;margin:14px 14px 6px;padding:10px 12px;background:#161619;border-left:3px solid var(--todo);border-radius:4px;font-family:var(--mono);font-size:12px;color:var(--text)}
+  .float-note small{display:block;color:var(--text-dim);margin-top:3px;font-size:11px}
+  .float-note::before{content:"";position:absolute;left:36px;top:-14px;width:1px;height:14px;background:var(--todo);opacity:.6}
+
+  /* ---- sections ---- */
+  section{padding:64px 0;border-top:1px solid var(--line)}
+  .eyebrow{display:inline-block;font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.08em;padding:3px 9px;border-radius:3px;margin-bottom:18px}
+  h2{font-family:var(--mono);font-weight:600;font-size:24px;margin-bottom:14px}
+  .section-lede{color:var(--text-dim);max-width:62ch}
+
+  .features{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;margin-top:34px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:22px}
+  .card h3{font-family:var(--mono);font-size:15px;font-weight:600;margin-bottom:8px}
+  .card p{font-size:14.5px;color:var(--text-dim)}
+
+  .steps{margin-top:30px;display:grid;gap:0}
+  .step{display:grid;grid-template-columns:120px 1fr;gap:18px;padding:18px 0;border-bottom:1px solid var(--line)}
+  .step:last-child{border-bottom:none}
+  .step .k{font-family:var(--mono);font-size:12px;color:var(--text-dim);padding-top:2px}
+  .step p{font-size:15px}
+  .step code,.docs-note code{font-family:var(--mono);font-size:13px;background:var(--panel-2);border:1px solid var(--line);border-radius:4px;padding:1px 6px}
+
+  footer{border-top:1px solid var(--line);padding:34px 0;font-size:13px;color:var(--text-dim)}
+  footer .frow{display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap}
+
+  @media (max-width:820px){
+    .hero{grid-template-columns:1fr;padding-top:52px}
+    .features{grid-template-columns:1fr}
+    .step{grid-template-columns:1fr;gap:6px}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap nav">
+    <!-- TODO: remplace YOUR STUDIO par ton nom de publisher -->
+    <div class="brand">YOUR STUDIO <span class="pub">/ unity editor tools</span></div>
+    <nav class="nav-links" aria-label="Main">
+      <a href="#features">Features</a>
+      <a href="#install">Install</a>
+      <a href="docs.html">Documentation</a>
+      <a href="#support">Support</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="wrap hero">
+    <div>
+      <h1>Stop losing track of your scenes.<br><span class="hl">Annotate the Hierarchy.</span></h1>
+      <p class="lede">Hierarchy Notes attaches notes, status badges and TODOs directly to GameObjects — visible in the Hierarchy, floating in the Scene View, and listed in one Overview panel. No components added, zero build impact.</p>
+      <div class="cta-row">
+        <!-- TODO: remplace # par l'URL Asset Store une fois l'asset publié -->
+        <a class="btn btn-primary" href="#">Get it on the Asset Store</a>
+        <a class="btn btn-ghost" href="docs.html">Read the docs</a>
+      </div>
+      <p class="pipeline-note">Unity 2021.3 LTS → Unity 6.3 · All render pipelines · Editor-only</p>
+    </div>
+
+    <div class="mock" role="img" aria-label="Mock of the Unity Hierarchy window showing colored status badges and a floating note label">
+      <div class="mock-titlebar"><span class="dot"></span> Hierarchy</div>
+      <div class="rowlist">
+        <div class="row"><span class="tri">▾</span><span class="obj">SampleScene</span></div>
+        <div class="row child"><span class="tri"></span><span class="obj">Main Camera</span></div>
+        <div class="row child t-todo"><span class="tri"></span><span class="obj">Player</span><span class="spacer"></span><span class="badge b-todo">TODO</span><span class="noteicon">i</span></div>
+        <div class="row child t-wip"><span class="tri">▾</span><span class="obj">Enemies</span><span class="spacer"></span><span class="badge b-wip">WIP</span><span class="noteicon">i</span></div>
+        <div class="row child" style="padding-left:34px"><span class="tri"></span><span class="obj">Goblin_01</span></div>
+        <div class="row child t-broken" style="padding-left:34px"><span class="tri"></span><span class="obj">Boss</span><span class="spacer"></span><span class="badge b-broken">BROKEN</span><span class="noteicon">i</span></div>
+        <div class="row child t-final"><span class="tri"></span><span class="obj">Environment</span><span class="spacer"></span><span class="badge b-final">FINAL</span></div>
+      </div>
+      <div class="float-note">[TODO] Rebalance jump height before the demo<small>Scene View label · drag to reposition</small></div>
+    </div>
+  </div>
+
+  <section id="features">
+    <div class="wrap">
+      <span class="eyebrow b-todo badge">WHAT IT DOES</span>
+      <h2>A task tracker that lives where you work</h2>
+      <p class="section-lede">Notes are stored in a single project asset — never as components on your GameObjects. Your prefabs, builds and Git diffs stay clean.</p>
+      <div class="features">
+        <div class="card"><h3>Badges &amp; tints in the Hierarchy</h3><p>TODO, WIP, Broken and Final statuses color-code your rows. Hover the note icon to read the full note, click to edit. Colors are fully customizable.</p></div>
+        <div class="card"><h3>Floating labels in the Scene View</h3><p>Notes stay visible next to their objects — no selection needed. Drag labels to reposition them, with a leader line back to the object.</p></div>
+        <div class="card"><h3>One Overview panel</h3><p>Every note in the project, grouped by scene and prefab. Filter by status, search, ping the object, edit or relink — your TODO list, clickable.</p></div>
+        <div class="card"><h3>Prefab Mode &amp; orphan recovery</h3><p>Annotate inside Prefab Mode. Notes survive prefab conversion thanks to safe auto-relink, and orphaned notes can always be relinked manually.</p></div>
+        <div class="card"><h3>Full Undo support</h3><p>Every operation — create, edit, delete, move, relink — is undoable with Ctrl+Z, like any native Unity action.</p></div>
+        <div class="card"><h3>Team-friendly storage</h3><p>All notes live in one ScriptableObject asset. Commit it to share notes with your team; visual preferences stay per-user.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="install">
+    <div class="wrap">
+      <span class="eyebrow b-wip badge">GET STARTED</span>
+      <h2>Up and running in two minutes</h2>
+      <div class="steps">
+        <div class="step"><span class="k">01 · IMPORT</span><p>Import the package from the Asset Store. Everything lives in an <code>Editor</code> folder — nothing ships in your build.</p></div>
+        <div class="step"><span class="k">02 · ANNOTATE</span><p>Right-click any GameObject → <code>Hierarchy Notes → Add or Edit Note</code> (or <code>Ctrl+Shift+N</code>). Type a note, pick a status, done.</p></div>
+        <div class="step"><span class="k">03 · TRACK</span><p>Open <code>Window → Hierarchy Notes → Overview</code> to see every note in the project. Filter on TODO and work through the list.</p></div>
+      </div>
+      <p class="docs-note" style="margin-top:22px;color:var(--text-dim);font-size:14px">Settings live in <code>Edit → Preferences → Hierarchy Notes</code> — colors, Scene View labels, auto-relink and more. Full details in the <a href="docs.html">documentation</a>.</p>
+    </div>
+  </section>
+
+  <section id="support">
+    <div class="wrap">
+      <span class="eyebrow b-final badge">SUPPORT</span>
+      <h2>Questions or bug reports</h2>
+      <!-- TODO: remplace l'adresse email -->
+      <p class="section-lede">Email <a href="mailto:you@example.com">you@example.com</a> — replies usually within 48 hours. Please include your Unity version and, for bugs, the steps to reproduce.</p>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap frow">
+    <!-- TODO: remplace YOUR STUDIO -->
+    <span>© 2026 YOUR STUDIO</span>
+    <span>Hierarchy Notes is an editor extension for the Unity engine. Unity is a trademark of Unity Technologies.</span>
+  </div>
+</footer>
+
+</body>
+</html>

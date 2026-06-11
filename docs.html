@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Documentation — Hierarchy Notes</title>
+<meta name="description" content="Documentation for Hierarchy Notes: usage, Prefab Mode, settings, troubleshooting.">
+<style>
+  :root{
+    --bg:#1b1b1f;--panel:#26262b;--panel-2:#2e2e34;--line:#3a3a41;
+    --text:#d7d7dc;--text-dim:#8e8e98;
+    --todo:#ff9a1f;--wip:#4d9aff;--broken:#f2554d;--final:#46c96b;
+    --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    --body:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  @media (prefers-reduced-motion: reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+  body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:16px;line-height:1.7}
+  a{color:var(--wip);text-decoration:none}
+  a:hover{text-decoration:underline}
+  a:focus-visible{outline:2px solid var(--wip);outline-offset:3px;border-radius:3px}
+  .wrap{max-width:780px;margin:0 auto;padding:0 24px}
+  header{border-bottom:1px solid var(--line)}
+  .nav{display:flex;align-items:center;justify-content:space-between;height:60px}
+  .brand{font-family:var(--mono);font-size:14px;color:var(--text)}
+  .brand .pub{color:var(--text-dim)}
+  .nav a{color:var(--text-dim);font-size:14px}
+  main{padding:56px 0 80px}
+  h1{font-family:var(--mono);font-size:30px;font-weight:600;margin-bottom:8px}
+  .sub{color:var(--text-dim);margin-bottom:44px}
+  h2{font-family:var(--mono);font-size:19px;font-weight:600;margin:44px 0 12px;padding-top:26px;border-top:1px solid var(--line)}
+  h3{font-family:var(--mono);font-size:15px;font-weight:600;margin:24px 0 8px;color:var(--text)}
+  p{margin-bottom:12px}
+  ul{margin:0 0 12px 22px}
+  li{margin-bottom:6px}
+  code{font-family:var(--mono);font-size:13.5px;background:var(--panel-2);border:1px solid var(--line);border-radius:4px;padding:1px 6px}
+  .badge{display:inline-block;font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.06em;padding:2px 7px;border-radius:3px;vertical-align:1px}
+  .b-todo{background:var(--todo);color:#15100a}
+  .b-wip{background:var(--wip);color:#0a1322}
+  .b-broken{background:var(--broken);color:#1d0908}
+  .b-final{background:var(--final);color:#0a1c0f}
+  .callout{background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--wip);border-radius:6px;padding:14px 16px;margin:16px 0;font-size:14.5px}
+  .callout.warn{border-left-color:var(--todo)}
+  dt{font-family:var(--mono);font-size:14px;font-weight:600;margin-top:14px}
+  dd{margin-left:0;color:var(--text-dim);font-size:15px}
+  footer{border-top:1px solid var(--line);padding:30px 0;font-size:13px;color:var(--text-dim)}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap nav">
+    <!-- TODO: remplace YOUR STUDIO -->
+    <div class="brand">YOUR STUDIO <span class="pub">/ hierarchy notes</span></div>
+    <nav aria-label="Main"><a href="index.html">← Back to overview</a></nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <h1>Documentation</h1>
+  <p class="sub">Hierarchy Notes 1.0 · Unity 2021.3 LTS → Unity 6.3 · Editor-only, all render pipelines</p>
+
+  <h2 id="basics">Adding and editing notes</h2>
+  <p>Right-click a GameObject in the Hierarchy and choose <code>Hierarchy Notes → Add or Edit Note</code>, or press <code>Ctrl+Shift+N</code> with the object selected. Type your note, pick a status, and save (<code>Ctrl+Enter</code> also works).</p>
+  <p>Statuses: <span class="badge b-todo">TODO</span> <span class="badge b-wip">WIP</span> <span class="badge b-broken">BROKEN</span> <span class="badge b-final">FINAL</span> — each tints the Hierarchy row and shows a badge. Hover the note icon to read the note; click it to edit. Remove a note via <code>Hierarchy Notes → Remove Note</code> or the X button in the Overview.</p>
+  <p>Every operation supports Undo (<code>Ctrl+Z</code>).</p>
+
+  <h2 id="sceneview">Scene View labels</h2>
+  <p>Annotated objects show a floating label in the Scene View — no selection required. Labels beyond a configurable distance from the camera are hidden.</p>
+  <ul>
+    <li><strong>Drag</strong> a label to reposition it. The offset is stored in world space, so the layout stays consistent as you orbit the camera, with a leader line back to the object.</li>
+    <li><strong>Click</strong> a label to edit the note.</li>
+    <li><strong>Right-click</strong> a label for <code>Reset Position</code> and <code>Edit Note</code>.</li>
+  </ul>
+  <p>Toggle labels via <code>Window → Hierarchy Notes → Show Notes in Scene View</code> or in Preferences.</p>
+
+  <h2 id="overview">The Overview panel</h2>
+  <p>Open <code>Window → Hierarchy Notes → Overview</code>. It lists every note in the project, grouped by scene and by prefab, with search and a status filter. Per entry:</p>
+  <ul>
+    <li><strong>Ping</strong> selects and highlights the object (or <strong>Open</strong> for prefab notes, which opens the prefab and pings the object).</li>
+    <li><strong>Edit</strong> opens the note editor; <strong>X</strong> deletes the note.</li>
+    <li><strong>Relink</strong> appears on orphaned notes (greyed out, in italics) and rebinds the note to the currently selected object.</li>
+    <li><strong>Clean missing</strong> removes entries whose object no longer exists, with a confirmation if some are still relinkable.</li>
+  </ul>
+
+  <h2 id="prefab">Prefab Mode</h2>
+  <p>Notes created in Prefab Mode belong to the <em>prefab asset</em>, not to scene instances. They are visible while editing the prefab and in the Overview (grouped under <code>[Prefab]</code>); scene instances of the prefab do not display them.</p>
+  <p>Prefab notes are identified by the prefab's GUID plus the object's path inside the prefab. Renaming the prefab <em>file</em> is safe; renaming an object <em>inside</em> the prefab orphans its note (relink it from the Overview).</p>
+
+  <h2 id="storage">Storage &amp; teams</h2>
+  <p>All notes live in a single asset: <code>Assets/HierarchyNotes/HierarchyNotesData.asset</code>. No components are ever added to your GameObjects — prefabs, builds and version control stay clean. Commit the asset to share notes with your team. Visual preferences (colors, label size, toggles) are per-user and are not committed.</p>
+
+  <h2 id="settings">Settings</h2>
+  <p>Open <code>Edit → Preferences → Hierarchy Notes</code>:</p>
+  <dl>
+    <dt>General</dt>
+    <dd>Scene View labels on/off, max display distance, auto-relink toggle, quick access to the Overview.</dd>
+    <dt>Appearance</dt>
+    <dd>Custom color per status, Hierarchy row tint opacity, badge and icon visibility, Scene View label font size and background opacity, reset to defaults.</dd>
+  </dl>
+
+  <h2 id="troubleshooting">Troubleshooting</h2>
+
+  <h3>A note disappeared after I turned an object into a prefab</h3>
+  <p>Converting an object to a prefab changes its internal identifier. Hierarchy Notes detects this and automatically relinks the note when there is exactly one safe match. Auto-relink only applies within a few seconds of the note becoming orphaned — older orphans never rebind automatically and stay listed as <em>(orphan)</em> in the Overview, where you can relink them manually.</p>
+
+  <h3>An old note attached itself to a new object</h3>
+  <div class="callout warn">This was possible in early versions and is prevented by the auto-relink grace window. If you prefer, disable auto-relink entirely in Preferences and use manual Relink only.</div>
+
+  <h3>I see notes I can't ping</h3>
+  <p>The note's scene isn't loaded, or it's a prefab note (use <strong>Open</strong>). If the scene is loaded and the object is gone, the entry shows as orphaned — relink or clean it.</p>
+
+  <h2 id="support">Support</h2>
+  <!-- TODO: remplace l'adresse email -->
+  <p>Email <a href="mailto:you@example.com">you@example.com</a> with your Unity version and steps to reproduce. Feature requests are very welcome.</p>
+</main>
+
+<footer>
+  <div class="wrap">© 2026 YOUR STUDIO · Unity is a trademark of Unity Technologies.</div>
+</footer>
+
+</body>
+</html>
