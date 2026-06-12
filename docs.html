@@ -61,7 +61,7 @@
   <p class="sub">Hierarchy Notes 1.0 · Unity 2021.3 LTS → Unity 6.3 · Editor-only, all render pipelines</p>
 
   <h2 id="basics">Adding and editing notes</h2>
-  <p>Right-click a GameObject — in the Hierarchy or directly in the Scene View — and choose <code>Hierarchy Notes → Add or Edit Note</code>, or press <code>Ctrl+Alt+N</code> with the object selected. Type your note, pick a status, and save (<code>Ctrl+Enter</code> also works). Clicking outside the note window saves it, like a sticky note; <code>Escape</code> cancels without saving.</p>
+  <p>Right-click a GameObject — in the Hierarchy or directly in the Scene View (on Unity 2021.3–2023.1, use <code>Ctrl+Right-Click</code> in the Scene View; on 2023.2+ the entries are part of the native right-click menu) — and choose <code>Hierarchy Notes → Add or Edit Note</code>, or press <code>Ctrl+Alt+N</code> with the object selected. Type your note, pick a status, and save (<code>Ctrl+Enter</code> also works). Clicking outside the note window saves it, like a sticky note; <code>Escape</code> cancels without saving.</p>
   <p>Statuses: <span class="badge b-todo">TODO</span> <span class="badge b-wip">WIP</span> <span class="badge b-broken">BROKEN</span> <span class="badge b-final">FINAL</span> — each tints the Hierarchy row and shows a badge. Hover the note icon to read the note; click it to edit. Remove a note via <code>Hierarchy Notes → Remove Note</code> or the X button in the Overview.</p>
   <p>Every operation supports Undo (<code>Ctrl+Z</code>).</p>
 
@@ -97,7 +97,7 @@
   <p>Open <code>Edit → Preferences → Hierarchy Notes</code>:</p>
   <dl>
     <dt>General</dt>
-    <dd>Scene View labels on/off, max display distance, auto-relink toggle, prefab note indicators on/off, Scene View right-click menu (Unity 2021.3–2023.1 only; on 2023.2+ the entries are part of Unity's native context menu), quick access to the Overview.</dd>
+    <dd>Scene View labels on/off, max display distance, auto-relink toggle, prefab note indicators on/off, Scene View context menu via <code>Ctrl+Right-Click</code> (Unity 2021.3–2023.1 only; on 2023.2+ the entries are part of Unity's native context menu), quick access to the Overview.</dd>
     <dt>Appearance</dt>
     <dd>Custom color per status, Hierarchy row tint opacity, badge and icon visibility, Scene View label font size (8–32), screen offset and background opacity, mesh-center anchoring on/off, reset to defaults.</dd>
   </dl>
