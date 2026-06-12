@@ -61,12 +61,14 @@
   <p class="sub">Hierarchy Notes 1.0 · Unity 2021.3 LTS → Unity 6.3 · Editor-only, all render pipelines</p>
 
   <h2 id="basics">Adding and editing notes</h2>
-  <p>Right-click a GameObject — in the Hierarchy or directly in the Scene View (on Unity 2021.3–2023.1, use <code>Ctrl+Right-Click</code> in the Scene View; on 2023.2+ the entries are part of the native right-click menu) — and choose <code>Hierarchy Notes → Add or Edit Note</code>, or press <code>Ctrl+Alt+N</code> with the object selected. Type your note, pick a status, and save (<code>Ctrl+Enter</code> also works). Clicking outside the note window saves it, like a sticky note; <code>Escape</code> cancels without saving.</p>
+  <p>Right-click a GameObject — in the Hierarchy or directly in the Scene View (on Unity 2021.3–2023.1, use <code>Ctrl+Right-Click</code> in the Scene View; on 2023.2+ the entries are part of the native right-click menu) — and choose <code>Hierarchy Notes → Add or Edit Note</code>, or press <code>Ctrl+Alt+N</code> with the object selected. Type your note (<code>Shift+Enter</code> inserts a line break), pick a status, and save (<code>Ctrl+Enter</code> also works). Clicking outside the note window saves it, like a sticky note; <code>Escape</code> cancels without saving. The window is freely resizable and remembers its size.</p>
+  <h3>Remarks</h3>
+  <p>Below the note, the <strong>Remarks</strong> field holds longer details — implementation notes, tested values, links, anything too verbose for a label. Remarks are <em>never</em> shown in the Scene View or the Hierarchy: they live only in the edit window and the Overview, where entries with remarks display a <code>¶</code> marker (hover it to preview). Think of it as: note = what everyone sees at a glance, remarks = the fine print.</p>
   <p>Statuses: <span class="badge b-todo">TODO</span> <span class="badge b-wip">WIP</span> <span class="badge b-broken">BROKEN</span> <span class="badge b-final">FINAL</span> — each tints the Hierarchy row and shows a badge. Hover the note icon to read the note; click it to edit. Remove a note via <code>Hierarchy Notes → Remove Note</code> or the X button in the Overview.</p>
   <p>Every operation supports Undo (<code>Ctrl+Z</code>).</p>
 
   <h2 id="sceneview">Scene View labels</h2>
-  <p>Annotated objects show a floating label in the Scene View — no selection required. Labels beyond a configurable distance from the camera are hidden.</p>
+  <p>Annotated objects show a floating label in the Scene View — no selection required. Labels display up to four lines of the note (long lines are truncated with "…"); the full text is always available in the tooltip. Remarks never appear in the Scene View. Labels beyond a configurable distance from the camera are hidden.</p>
   <ul>
     <li><strong>Drag</strong> a label to reposition it. The offset is stored in world space, so the layout stays consistent as you orbit the camera, with a leader line back to the object.</li>
     <li><strong>Click</strong> a label to edit the note.</li>
@@ -78,10 +80,11 @@
   <h2 id="overview">The Overview panel</h2>
   <p>Open <code>Window → Hierarchy Notes → Overview</code>. It lists every note in the project, grouped by scene and by prefab, with search and a status filter. Per entry:</p>
   <ul>
-    <li><strong>Ping</strong> selects and highlights the object (or <strong>Open</strong> for prefab notes, which opens the prefab and pings the object).</li>
+    <li><strong>Ping / Open</strong> — the navigation button adapts to context, so you can move between scenes and prefabs without ever touching the Project window. <strong>Open</strong> (on a prefab note) opens the prefab in isolation, then pings and selects the annotated object inside. <strong>Ping</strong> on a prefab note whose stage is already open pings it within the stage; on a scene note it pings the object in the scene — and if a prefab is currently open, it first returns to the scene (same as the Hierarchy back arrow, with Unity's native save dialog if the prefab has unsaved changes), then pings the object.</li>
     <li><strong>Edit</strong> opens the note editor; <strong>X</strong> deletes the note.</li>
     <li><strong>Relink</strong> appears on orphaned notes (greyed out, in italics) and rebinds the note to the currently selected object.</li>
     <li><strong>Clean missing</strong> removes entries whose object no longer exists, with a confirmation if some are still relinkable.</li>
+    <li>Entries with remarks show a <code>¶</code> marker next to the note preview — hover it to read them. The search field matches both note text and remarks.</li>
   </ul>
 
   <h2 id="prefab">Prefab Mode</h2>
