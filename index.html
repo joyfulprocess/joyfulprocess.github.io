@@ -70,6 +70,9 @@
   .b-broken{background:var(--broken);color:#1d0908}
   .b-final{background:var(--final);color:#0a1c0f}
   .noteicon{width:14px;height:14px;border-radius:50%;border:1.5px solid var(--text-dim);color:var(--text-dim);font-size:9px;display:inline-flex;align-items:center;justify-content:center;font-style:italic;font-family:Georgia,serif}
+  .pbars{display:inline-flex;gap:1px;align-items:center}
+  .pbar{width:3px;height:12px;border-radius:1px}
+  .pcount{font-size:9px;font-weight:700;border:1px solid var(--text-dim);color:var(--text-dim);border-radius:3px;padding:0 4px;margin:0 4px 0 3px;line-height:13px}
   .t-todo{background:linear-gradient(90deg,color-mix(in srgb,var(--todo) 14%,transparent),transparent 70%)}
   .t-wip{background:linear-gradient(90deg,color-mix(in srgb,var(--wip) 14%,transparent),transparent 70%)}
   .t-broken{background:linear-gradient(90deg,color-mix(in srgb,var(--broken) 14%,transparent),transparent 70%)}
@@ -143,7 +146,7 @@
         <div class="row child"><span class="tri"></span><span class="obj">Main Camera</span></div>
         <div class="row child t-todo"><span class="tri"></span><span class="obj">Player</span><span class="spacer"></span><span class="badge b-todo">TODO</span><span class="noteicon">i</span></div>
         <div class="row child t-wip"><span class="tri">▾</span><span class="obj">Enemies</span><span class="spacer"></span><span class="badge b-wip">WIP</span><span class="noteicon">i</span></div>
-        <div class="row child" style="padding-left:34px"><span class="tri"></span><span class="obj">Goblin_01</span></div>
+        <div class="row child" style="padding-left:34px"><span class="tri"></span><span class="obj">Goblin_01</span><span class="spacer"></span><span class="pbars"><span class="pbar" style="background:var(--broken)"></span><span class="pbar" style="background:var(--todo)"></span></span><span class="pcount">3</span></div>
         <div class="row child t-broken" style="padding-left:34px"><span class="tri"></span><span class="obj">Boss</span><span class="spacer"></span><span class="badge b-broken">BROKEN</span><span class="noteicon">i</span></div>
         <div class="row child t-final"><span class="tri"></span><span class="obj">Environment</span><span class="spacer"></span><span class="badge b-final">FINAL</span></div>
       </div>
@@ -158,9 +161,9 @@
       <p class="section-lede">Notes are stored in a single project asset — never as components on your GameObjects. Your prefabs, builds and Git diffs stay clean.</p>
       <div class="features">
         <div class="card"><h3>Badges &amp; tints in the Hierarchy</h3><p>TODO, WIP, Broken and Final statuses color-code your rows. Hover the note icon to read the full note, click to edit. Colors are fully customizable.</p></div>
-        <div class="card"><h3>Floating labels in the Scene View</h3><p>Notes stay visible next to their objects — no selection needed. Drag labels to reposition them, with a leader line back to the object.</p></div>
+        <div class="card"><h3>Floating labels in the Scene View</h3><p>Notes stay visible next to their objects — no selection needed, anchored to the visual center of the mesh. Drag labels to reposition them, with a leader line back to the object.</p></div>
         <div class="card"><h3>One Overview panel</h3><p>Every note in the project, grouped by scene and prefab. Filter by status, search, ping the object, edit or relink — your TODO list, clickable.</p></div>
-        <div class="card"><h3>Prefab Mode &amp; orphan recovery</h3><p>Annotate inside Prefab Mode. Notes survive prefab conversion thanks to safe auto-relink, and orphaned notes can always be relinked manually.</p></div>
+        <div class="card"><h3>Prefab Mode &amp; instance indicators</h3><p>Annotate inside Prefab Mode — every scene instance shows a compact status indicator with a note count. Click it to jump into the prefab. Notes survive prefab conversion thanks to safe auto-relink.</p></div>
         <div class="card"><h3>Full Undo support</h3><p>Every operation — create, edit, delete, move, relink — is undoable with Ctrl+Z, like any native Unity action.</p></div>
         <div class="card"><h3>Team-friendly storage</h3><p>All notes live in one ScriptableObject asset. Commit it to share notes with your team; visual preferences stay per-user.</p></div>
       </div>
@@ -173,7 +176,7 @@
       <h2>Up and running in two minutes</h2>
       <div class="steps">
         <div class="step"><span class="k">01 · IMPORT</span><p>Import the package from the Asset Store. Everything lives in an <code>Editor</code> folder — nothing ships in your build.</p></div>
-        <div class="step"><span class="k">02 · ANNOTATE</span><p>Right-click any GameObject → <code>Hierarchy Notes → Add or Edit Note</code> (or <code>Ctrl+Shift+N</code>). Type a note, pick a status, done.</p></div>
+        <div class="step"><span class="k">02 · ANNOTATE</span><p>Right-click any GameObject — in the Hierarchy or directly in the Scene View — → <code>Hierarchy Notes → Add or Edit Note</code> (or <code>Ctrl+Alt+N</code>). Type a note, pick a status, done.</p></div>
         <div class="step"><span class="k">03 · TRACK</span><p>Open <code>Window → Hierarchy Notes → Overview</code> to see every note in the project. Filter on TODO and work through the list.</p></div>
       </div>
       <p class="docs-note" style="margin-top:22px;color:var(--text-dim);font-size:14px">Settings live in <code>Edit → Preferences → Hierarchy Notes</code> — colors, Scene View labels, auto-relink and more. Full details in the <a href="docs.html">documentation</a>.</p>

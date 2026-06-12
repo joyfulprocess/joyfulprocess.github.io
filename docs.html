@@ -61,7 +61,7 @@
   <p class="sub">Hierarchy Notes 1.0 · Unity 2021.3 LTS → Unity 6.3 · Editor-only, all render pipelines</p>
 
   <h2 id="basics">Adding and editing notes</h2>
-  <p>Right-click a GameObject in the Hierarchy and choose <code>Hierarchy Notes → Add or Edit Note</code>, or press <code>Ctrl+Shift+N</code> with the object selected. Type your note, pick a status, and save (<code>Ctrl+Enter</code> also works).</p>
+  <p>Right-click a GameObject — in the Hierarchy or directly in the Scene View — and choose <code>Hierarchy Notes → Add or Edit Note</code>, or press <code>Ctrl+Alt+N</code> with the object selected. Type your note, pick a status, and save (<code>Ctrl+Enter</code> also works). Clicking outside the note window saves it, like a sticky note; <code>Escape</code> cancels without saving.</p>
   <p>Statuses: <span class="badge b-todo">TODO</span> <span class="badge b-wip">WIP</span> <span class="badge b-broken">BROKEN</span> <span class="badge b-final">FINAL</span> — each tints the Hierarchy row and shows a badge. Hover the note icon to read the note; click it to edit. Remove a note via <code>Hierarchy Notes → Remove Note</code> or the X button in the Overview.</p>
   <p>Every operation supports Undo (<code>Ctrl+Z</code>).</p>
 
@@ -73,6 +73,7 @@
     <li><strong>Right-click</strong> a label for <code>Reset Position</code> and <code>Edit Note</code>.</li>
   </ul>
   <p>Toggle labels via <code>Window → Hierarchy Notes → Show Notes in Scene View</code> or in Preferences.</p>
+  <p>By default, labels and their leader lines anchor to the <strong>visual center of the mesh</strong> (combined renderer bounds, children included) rather than the transform pivot — imported FBX models often have their pivot at the model origin, which would otherwise send leader lines to the ground. This can be disabled in Preferences (<em>Anchor labels to mesh center</em>). The default screen offset of labels and their font size (8–32) are also configurable there.</p>
 
   <h2 id="overview">The Overview panel</h2>
   <p>Open <code>Window → Hierarchy Notes → Overview</code>. It lists every note in the project, grouped by scene and by prefab, with search and a status filter. Per entry:</p>
@@ -86,6 +87,8 @@
   <h2 id="prefab">Prefab Mode</h2>
   <p>Notes created in Prefab Mode belong to the <em>prefab asset</em>, not to scene instances. They are visible while editing the prefab and in the Overview (grouped under <code>[Prefab]</code>); scene instances of the prefab do not display them.</p>
   <p>Prefab notes are identified by the prefab's GUID plus the object's path inside the prefab. Renaming the prefab <em>file</em> is safe; renaming an object <em>inside</em> the prefab orphans its note (relink it from the Overview).</p>
+  <h3>Instance indicators</h3>
+  <p>When a prefab asset contains notes, every scene instance of that prefab shows a compact indicator on its root row in the Hierarchy: one small vertical bar per status present (fixed order: <span class="badge b-broken">BROKEN</span> <span class="badge b-todo">TODO</span> <span class="badge b-wip">WIP</span> <span class="badge b-final">FINAL</span>) and a counter with the total number of notes ("3", "9+"). Hover for a detailed breakdown; <strong>click to open the prefab</strong> in isolation. The indicator never collides with a note placed directly on the instance — both can coexist on the same row. Toggle it in Preferences (<em>Show prefab note indicators in Hierarchy</em>).</p>
 
   <h2 id="storage">Storage &amp; teams</h2>
   <p>All notes live in a single asset: <code>Assets/HierarchyNotes/HierarchyNotesData.asset</code>. No components are ever added to your GameObjects — prefabs, builds and version control stay clean. Commit the asset to share notes with your team. Visual preferences (colors, label size, toggles) are per-user and are not committed.</p>
@@ -94,9 +97,9 @@
   <p>Open <code>Edit → Preferences → Hierarchy Notes</code>:</p>
   <dl>
     <dt>General</dt>
-    <dd>Scene View labels on/off, max display distance, auto-relink toggle, quick access to the Overview.</dd>
+    <dd>Scene View labels on/off, max display distance, auto-relink toggle, prefab note indicators on/off, Scene View right-click menu (Unity 2021.3–2023.1 only; on 2023.2+ the entries are part of Unity's native context menu), quick access to the Overview.</dd>
     <dt>Appearance</dt>
-    <dd>Custom color per status, Hierarchy row tint opacity, badge and icon visibility, Scene View label font size and background opacity, reset to defaults.</dd>
+    <dd>Custom color per status, Hierarchy row tint opacity, badge and icon visibility, Scene View label font size (8–32), screen offset and background opacity, mesh-center anchoring on/off, reset to defaults.</dd>
   </dl>
 
   <h2 id="troubleshooting">Troubleshooting</h2>
